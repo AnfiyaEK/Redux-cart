@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import Header from '../Components/Header'
-import { Link } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { decQuantity, emptyCart, incQuantity, removeCartItem } from '../REDUX/Slices/cartSlice'
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function Cart() {
+  const navigate = useNavigate()
   const dispatch = useDispatch()
   const cartItems = useSelector(state=>state.cartReducer)
   const [cartTotal,setCartTotal] = useState(0)
@@ -32,6 +34,16 @@ function Cart() {
     {
       dispatch(removeCartItem(product.id))
     }
+  }
+
+  const handleCheckout = ()=>
+  {
+    dispatch(emptyCart())
+    toast.success("Order placed successfully... Thank you for purchasing with us!!!")
+    setTimeout(()=>
+    {
+      navigate("/")
+    },2000)
   }
 
 
@@ -89,7 +101,7 @@ function Cart() {
               <h5>Total Items: <b className='text-primary'>{cartItems?.length}</b></h5>
               <h4>Total Amount: <b className='text-primary'>$ {cartTotal}</b></h4>
               <div className='d-grid mt-4'>
-                <button className='btn btn-success'>Check Out</button>
+                <button onClick={handleCheckout} className='btn btn-success'>Check Out</button>
               </div>
             </div>
           </div>
@@ -102,6 +114,8 @@ function Cart() {
       </div>
       }
       </div>
+      <ToastContainer position='top-center' theme='colored' autoClose={3000}/>
+
     </>
   )
 }
